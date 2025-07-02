@@ -45,4 +45,3 @@ echo.
 echo To enable the schedule, update the CloudFormation stack
 echo and change State: DISABLED to State: ENABLED
 echo.
-pause 
