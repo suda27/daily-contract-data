@@ -8,7 +8,7 @@ Resources:
       FunctionName: DailyContractLambda
       Handler: io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest
       Runtime: java17
-      CodeUri: s3://user-lambda-deploy-bucket/ba4763a8ec025f026c8572d486e520a6
+      CodeUri: s3://user-lambda-deploy-bucket/34914f1a5354b948edac3cc159906bb6
       MemorySize: 512
       Timeout: 30
       Policies:

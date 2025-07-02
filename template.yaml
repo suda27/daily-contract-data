@@ -44,8 +44,8 @@ Resources:
     Type: AWS::Events::Rule
     Properties:
       Name: DailyContractLambda-Trigger
-      ScheduleExpression: cron(30 17 * * ? *)
-      State: DISABLED
+      ScheduleExpression: cron(0 12 * * ? *)
+      State: ENABLED
       Targets:
         - Id: DailyContractLambdaInvoke
           Arn: !GetAtt DailyContractLambda.Arn
