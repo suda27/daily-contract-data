@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Daily Contract Lambda Stack
+Resources:
+  DailyContractLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: DailyContractLambda
+      Handler: io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest
+      Runtime: java17
+      CodeUri: s3://user-lambda-deploy-bucket/ba4763a8ec025f026c8572d486e520a6
+      MemorySize: 512
+      Timeout: 30
+      Policies:
+      - AWSLambdaBasicExecutionRole
+    Metadata:
+      SamResourceId: DailyContractLambda
+  ScheduleRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: DailyContractLambda-Trigger
+      ScheduleExpression: cron(30 17 * * ? *)
+      State: DISABLED
+      Targets:
+      - Id: DailyContractLambdaInvoke
+        Arn:
+          Fn::GetAtt:
+          - DailyContractLambda
+          - Arn
+    Metadata:
+      SamResourceId: ScheduleRule
+  DailyContractLambdaEventBridgePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        Fn::GetAtt:
+        - DailyContractLambda
+        - Arn
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn:
+        Fn::GetAtt:
+        - ScheduleRule
+        - Arn
+    Metadata:
+      SamResourceId: DailyContractLambdaEventBridgePermission
+Outputs:
+  DailyContractLambdaArn:
+    Description: ARN of the Lambda function
+    Value:
+      Fn::GetAtt:
+      - DailyContractLambda
+      - Arn
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-DailyContractLambdaArn
+  DailyContractLambdaName:
+    Description: Name of the Lambda function
+    Value:
+      Ref: DailyContractLambda
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-DailyContractLambdaName
